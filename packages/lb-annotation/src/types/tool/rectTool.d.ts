@@ -12,6 +12,9 @@ declare interface IRect {
   disableDelete?: boolean; // 是否允许被删除
 
   label?: string; // 列表标签
+  // other attributes
+  entityId?: LineString;
+  attributes?: Map<string, any>;
 }
 
 declare interface RectStyle {

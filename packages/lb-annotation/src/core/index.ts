@@ -35,6 +35,8 @@ const loadImage = (imgSrc: string) => {
 export default class AnnotationEngine {
   public toolInstance: any; // 用于存储当前工具实例
 
+  public toolInstanceMap: Map<THybridToolName, any>;
+
   public toolName: THybridToolName;
 
   public i18nLanguage: 'en' | 'cn'; // 存储当前 i18n 初始化数据
@@ -57,6 +59,7 @@ export default class AnnotationEngine {
   private toolScheduler: ToolScheduler; // For multi-level management of tools
 
   constructor(props: IProps) {
+    this.toolInstanceMap = new Map();
     this.container = props.container;
     this.size = props.size;
     this.toolName = props.toolName;
@@ -148,6 +151,7 @@ export default class AnnotationEngine {
 
     toolList.forEach((toolName, i) => {
       const toolInstance = this.toolScheduler.createOperation(toolName, undefined, config);
+      this.toolInstanceMap.set(toolName, toolInstance);
       if (i === toolList.length - 1) {
         // The last one by default is the topmost operation.
         this.toolInstance = toolInstance;
