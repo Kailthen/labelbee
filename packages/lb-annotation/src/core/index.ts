@@ -56,7 +56,7 @@ export default class AnnotationEngine {
 
   private dependToolName?: EToolName;
 
-  private toolScheduler: ToolScheduler; // For multi-level management of tools
+  public toolScheduler: ToolScheduler; // For multi-level management of tools
 
   constructor(props: IProps) {
     this.toolInstanceMap = new Map();
@@ -266,5 +266,18 @@ export default class AnnotationEngine {
    */
   public setCustomRenderStyle(customRenderStyle: (data: IAnnotationStyle) => IAnnotationStyle) {
     this.toolInstance.setCustomRenderStyle(customRenderStyle);
+  }
+
+  /**
+   * 切换工具
+   * @param toolName 工具名
+   * @returns newInstance
+   */
+  public switchTo(toolName: EToolName): any {
+    const newInstance = this.toolScheduler.switchToCanvas(toolName);
+    if (newInstance) {
+      this.toolInstance = newInstance;
+      return newInstance;
+    }
   }
 }

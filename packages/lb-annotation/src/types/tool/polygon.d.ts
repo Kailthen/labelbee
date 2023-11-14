@@ -16,6 +16,10 @@ declare interface IPolygonData {
   attribute: string;
   isRect?: boolean; // 用于判断当前多边形矩形模式生成
   trackID?: number;
+
+  // other attributes
+  entityId?: string;
+  attributes?: Map<string, any>;
 }
 
 declare interface IPolygonPoint {

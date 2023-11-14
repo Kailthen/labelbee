@@ -1871,6 +1871,26 @@ class RectOperation extends BasicToolOperation {
       this.render();
     }
   }
+
+  /**
+   * 更新rect
+   * @param rectList 要更新的rect
+   */
+  public updateRect(rect: IRect) {
+    this.setRectList(
+      this.rectList.map((v) => {
+        if (v.id === rect.id) {
+          return {
+            ...v,
+            ...rect,
+          };
+        }
+        return v;
+      }),
+      true,
+    );
+    this.render();
+  }
 }
 
 export { RectOperation, IRectOperationProps };

@@ -13,7 +13,7 @@ declare interface IRect {
 
   label?: string; // 列表标签
   // other attributes
-  entityId?: LineString;
+  entityId?: string;
   attributes?: Map<string, any>;
 }
 

@@ -64,6 +64,11 @@ export class HybridToolUtils {
 }
 
 export class ToolScheduler implements IToolSchedulerOperation {
+  /**
+   * 上一个工具名
+   */
+  public preToolName: EToolName | undefined;
+
   private container: HTMLElement;
 
   private toolOperationList: Array<RectOperation | PolygonOperation | SegmentByRect> = [];
@@ -158,7 +163,7 @@ export class ToolScheduler implements IToolSchedulerOperation {
     };
   }
 
-  public createDom() {
+  public createDom(tool?: EToolName) {
     const { width, height } = this.defaultSize;
     const dom = window.document.createElement('div');
     dom.style.position = 'absolute';
@@ -168,6 +173,7 @@ export class ToolScheduler implements IToolSchedulerOperation {
     dom.style.height = `${height}px`;
     const zIndex = this.toolOperationList.length + 1;
     dom.style.zIndex = `${zIndex}`;
+    dom.id = `dom-tool-${tool}`;
     return dom;
   }
 
@@ -187,7 +193,7 @@ export class ToolScheduler implements IToolSchedulerOperation {
    */
   public createOperation(tool?: EToolName, imgNode?: HTMLImageElement, config?: Object) {
     const { width, height } = this.defaultSize;
-    const dom = this.createDom();
+    const dom = this.createDom(tool);
     const emptyImgNode = this.getEmptyImage(width, height);
 
     const defaultData = {
@@ -245,6 +251,7 @@ export class ToolScheduler implements IToolSchedulerOperation {
       // First Level
       this.toolOperationList.unshift(toolInstance);
       this.toolOperationDom.unshift(dom);
+      this.toolOperationNameList.unshift('basicTool' as EToolName);
 
       return toolInstance;
     }
@@ -325,6 +332,8 @@ export class ToolScheduler implements IToolSchedulerOperation {
     if (!chosenDom || !lastOneDom) {
       return;
     }
+
+    this.preToolName = toolName;
 
     const temp = lastOneDom.style.zIndex;
     lastOneDom.style.zIndex = `${chosenDom.style.zIndex}`;
