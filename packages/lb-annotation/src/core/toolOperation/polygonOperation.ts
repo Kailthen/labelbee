@@ -241,6 +241,41 @@ class PolygonOperation extends BasicToolOperation {
     this.render();
   }
 
+  public addOrUpdate(polygonData: any) {
+    const { defaultAttribute } = this;
+    const valid = true;
+    const sourceID = CommonToolUtils.getSourceID(this.basicResult);
+    const textAttribute = '';
+    let id: any = _.get(polygonData, 'id', null);
+
+    if (_.isEmpty(id)) {
+      // 新增
+      id = uuid(8, 62);
+      const polygon: IPolygonData = {
+        sourceID,
+        valid,
+        order: CommonToolUtils.getMaxOrder(this.currentShowList) + 1,
+        textAttribute,
+        attribute: defaultAttribute,
+        ...polygonData,
+        id,
+      };
+      this.polygonList.unshift(polygon as IPolygonData);
+    } else {
+      // 更新polygon
+      const oldIndex = this.polygonList.findIndex((item) => {
+        return item.id === id;
+      });
+      this.polygonList[oldIndex] = {
+        ...this.polygonList.at(oldIndex),
+        ...polygonData,
+      };
+    }
+    this.clearActiveStatus();
+    this.render();
+    return id;
+  }
+
   /**
    * 外层 sidabr 调用
    * @param v

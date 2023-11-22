@@ -69,6 +69,10 @@ export enum EToolName {
   PointCloudPolygon = 'pointCloudPolygon',
   /** LLM标注工具 */
   LLM = 'LLMTool',
+  /** SAM标注工具 */
+  SegmentBySAM = 'segmentBySAM',
+  /** SAM标注工具 */
+  SegmentByPoints = 'segmentByPoints',
 }
 
 export enum ECheckModel {

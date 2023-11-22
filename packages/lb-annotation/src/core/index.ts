@@ -7,13 +7,14 @@ import { getConfig, styleDefaultConfig } from '@/constant/defaultConfig';
 import { EToolName, THybridToolName } from '@/constant/tool';
 import { IPolygonData } from '@/types/tool/polygon';
 import { HybridToolUtils, ToolScheduler } from './scheduler';
+import _ from 'lodash';
 
 interface IProps {
   container: HTMLElement;
   size: ISize;
   toolName: THybridToolName;
   imgNode?: HTMLImageElement; // 展示图片的内容
-  config?: string; // 任务配置
+  config?: any; // 任务配置
   style?: any;
 }
 
@@ -65,12 +66,21 @@ export default class AnnotationEngine {
     this.toolName = props.toolName;
     this.imgNode = props.imgNode;
 
-    this.config = props.config ?? JSON.stringify(getConfig(HybridToolUtils.getTopToolName(props.toolName))); // 设置默认操作
+    this.config = props.config;
     this.style = props.style ?? styleDefaultConfig; // 设置默认操作
     this.toolScheduler = new ToolScheduler(props);
 
     this.i18nLanguage = 'cn'; // 默认为中文（跟 basicOperation 内同步）
     this._initToolOperation();
+  }
+
+  /**
+   * 获取默认配置
+   * @param tool tool name
+   * @returns 
+   */
+  public getDefaultToolConfig(tool: EToolName) {
+    return getConfig(tool);
   }
 
   /**
@@ -81,17 +91,17 @@ export default class AnnotationEngine {
    * 4. style
    */
 
-  /**
-   * 设置当前工具类型
-   * @param toolName
-   * @param config
-   */
-  public setToolName(toolName: THybridToolName, config?: string) {
-    this.toolName = toolName;
-    const defaultConfig = config || JSON.stringify(getConfig(HybridToolUtils.getTopToolName(toolName))); // 防止用户没有注入配置
-    this.config = defaultConfig;
-    this._initToolOperation();
-  }
+  // /**
+  //  * 设置当前工具类型
+  //  * @param toolName
+  //  * @param config
+  //  */
+  // public setToolName(toolName: THybridToolName, config?: string) {
+  //   this.toolName = toolName;
+  //   const defaultConfig = config || JSON.stringify(getConfig(HybridToolUtils.getTopToolName(toolName))); // 防止用户没有注入配置
+  //   this.config = defaultConfig;
+  //   this._initToolOperation();
+  // }
 
   public setImgSrc = async (imgSrc: string) => {
     const imgNode = await loadImage(imgSrc);
@@ -150,7 +160,16 @@ export default class AnnotationEngine {
     }
 
     toolList.forEach((toolName, i) => {
-      const toolInstance = this.toolScheduler.createOperation(toolName, undefined, config);
+      let conf: any = _.get(this.config, toolName, null);
+      if (_.isEmpty(conf)) {
+        conf = this.getDefaultToolConfig(toolName);
+      }
+      const toolInstance = this.toolScheduler.createOperation(toolName, undefined, {
+        config: {
+          ...config,
+          ...conf,
+        },
+      });
       this.toolInstanceMap.set(toolName, toolInstance);
       if (i === toolList.length - 1) {
         // The last one by default is the topmost operation.

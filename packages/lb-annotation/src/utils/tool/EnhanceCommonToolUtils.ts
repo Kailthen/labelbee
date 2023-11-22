@@ -16,6 +16,8 @@ import LineToolOperation from '../../core/toolOperation/LineToolOperation';
 import PointOperation from '../../core/toolOperation/pointOperation';
 import TextToolOperation from '../../core/toolOperation/TextToolOperation';
 import SegmentByRect from '../../core/toolOperation/segmentByRect';
+import SegmentBySAM from '@/core/toolOperation/segmentBySAM';
+import SegmentByPoints from '@/core/toolOperation/SegmentByPoints';
 import CommonToolUtils from './CommonToolUtils';
 
 const getCurrentOperation = (toolName: EToolName | ECheckModel) => {
@@ -43,6 +45,10 @@ const getCurrentOperation = (toolName: EToolName | ECheckModel) => {
       return CuboidOperation;
     case EToolName.PointCloudPolygon:
       return PointCloud2dOperation;
+    case EToolName.SegmentBySAM:
+      return SegmentBySAM;
+    case EToolName.SegmentByPoints:
+      return SegmentByPoints;
     default:
       throw new Error('not match tool');
   }

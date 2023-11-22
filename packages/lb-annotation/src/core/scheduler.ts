@@ -79,7 +79,7 @@ export class ToolScheduler implements IToolSchedulerOperation {
 
   private size: ISize;
 
-  private config: string; // 定义 TODO！！
+  // private config: string; // 定义 TODO！！
 
   private style: any; // 定义 TODO！！
 
@@ -91,7 +91,7 @@ export class ToolScheduler implements IToolSchedulerOperation {
     this.container = props.container;
     this.size = props.size;
     this.imgNode = props.imgNode;
-    this.config = props.config ?? JSON.stringify(getConfig(HybridToolUtils.getTopToolName(props.toolName))); // 设置默认操作
+    // this.config = props.config; //?? JSON.stringify(getConfig(HybridToolUtils.getTopToolName(props.toolName))); // 设置默认操作
     this.style = props.style ?? styleDefaultConfig; // 设置默认操作
     this.proxyMode = props.proxyMode;
     this.onWheel = this.onWheel.bind(this);
@@ -199,7 +199,7 @@ export class ToolScheduler implements IToolSchedulerOperation {
     const defaultData = {
       container: dom,
       size: this.size,
-      config: this?.config ?? '{}',
+      config: '{}',
       drawOutSideTarget: false,
       style: this.style,
       imgNode: imgNode || emptyImgNode,

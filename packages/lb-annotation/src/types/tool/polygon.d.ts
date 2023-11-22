@@ -16,6 +16,7 @@ declare interface IPolygonData {
   attribute: string;
   isRect?: boolean; // 用于判断当前多边形矩形模式生成
   trackID?: number;
+  sourceTool?: string; // 这个多边形由哪个工具生成
 
   // other attributes
   entityId?: string;
