@@ -99,58 +99,33 @@ class SegmentByPoints extends BasicToolOperation {
     return this.pointList.filter((i) => this.selection.isIdSelected(i.id));
   }
 
+  get currentAttribute() {
+    return this.defaultAttribute;
+  }
+
   /**
    * 向外部提供标记的更改
    * @param markerIndex
    */
-  public setMarkerIndex = (markerIndex: number) => {
-    this.markerIndex = markerIndex;
-  };
+  public setMarkerIndex = (markerIndex: number) => {};
 
   /**
    * 更改当前列表标注位置，并且设置为选中
    * @param markerIndex
    * @returns
    */
-  public setMarkerIndexAndSelect = (markerIndex: number) => {
-    if (!this.config.markerList) {
-      return;
-    }
-
-    this.markerIndex = markerIndex;
-    const markerValue = this.config.markerList[markerIndex].value;
-
-    const currentPoint = this.currentPageResult.find((point) => point.label === markerValue);
-
-    if (currentPoint) {
-      this.setSelectedID(currentPoint.id);
-      if (this.config.attributeConfigurable === true) {
-        this.setDefaultAttribute(currentPoint.attribute);
-      }
-    }
-    this.emit('markIndexChange');
-  };
+  public setMarkerIndexAndSelect = (markerIndex: number) => {};
 
   /**
    * 设置下一个列表选择器
    * @param pointList
    */
-  public setNextMarker(pointList = this.pointList) {
-    if (this.hasMarkerConfig) {
-      const nextMarkerInfo = CommonToolUtils.getNextMarker(
-        this.getCurrentPageResult(pointList),
-        this.config.markerList,
-      );
-      if (nextMarkerInfo) {
-        this.setMarkerIndexAndSelect(nextMarkerInfo.index);
-      }
-    }
-  }
+  public setNextMarker(pointList = this.pointList) {}
 
   public setResult(pointList: IPointUnit[]) {
     this.clearActiveStatus();
     this.setPointList(pointList);
-    this.setNextMarker(pointList);
+    // this.setNextMarker(pointList);
     this.recoverOperationMode();
     this.render();
   }
@@ -283,7 +258,7 @@ class SegmentByPoints extends BasicToolOperation {
 
   public setBasicResult(basicResult: any) {
     super.setBasicResult(basicResult);
-    this.setNextMarker();
+    // this.setNextMarker();
 
     this.clearActiveStatus();
   }
@@ -434,6 +409,18 @@ class SegmentByPoints extends BasicToolOperation {
     this.selection.triggerKeyboardEvent(e, this.setPointList.bind(this) as unknown as SetDataList);
   }
 
+  /**
+   * 切换为下一个类别
+   */
+  public changeDefaultAttribute() {
+    const currentAttrIndex = this.config.attributeList.findIndex((item) => item.key === this.defaultAttribute);
+    let nextIndex = currentAttrIndex + 1;
+    if (nextIndex >= this.config.attributeList.length) {
+      nextIndex = 0;
+    }
+    this.setDefaultAttribute(this.config.attributeList[nextIndex].key);
+  }
+
   public onKeyDown(e: KeyboardEvent) {
     if (!CommonToolUtils.hotkeyFilter(e)) {
       // 如果为输入框则进行过滤
@@ -459,6 +446,12 @@ class SegmentByPoints extends BasicToolOperation {
         break;
       case EKeyCode.A:
         this.selection.selectAll();
+        break;
+      case EKeyCode.C:
+        this.changeDefaultAttribute();
+        break;
+      case EKeyCode.X:
+        this.clearResult();
         break;
       default: {
         if (this.config.attributeConfigurable) {
@@ -658,7 +651,7 @@ class SegmentByPoints extends BasicToolOperation {
     if (hoverPoint?.label && this.hasMarkerConfig) {
       const markerIndex = CommonToolUtils.getCurrentMarkerIndex(hoverPoint.label, this.config.markerList);
       if (markerIndex >= 0) {
-        this.setMarkerIndex(markerIndex);
+        // this.setMarkerIndex(markerIndex);
         this.emit('markIndexChange');
       }
     }
@@ -788,57 +781,9 @@ class SegmentByPoints extends BasicToolOperation {
   }
 
   /** 更新文本输入，并且进行关闭 */
-  public updateSelectedTextAttribute() {
-    // if (this._textAttributeInstance && newTextAttribute && this.selectedID) {
-    //   let textAttribute = newTextAttribute;
-    //   if (AttributeUtils.textAttributeValidate(this.config.textCheckType, '', textAttribute) === false) {
-    //     this.emit('messageError', AttributeUtils.getErrorNotice(this.config.textCheckType, this.lang));
-    //     textAttribute = '';
-    //   }
+  public updateSelectedTextAttribute() {}
 
-    //   this.setPointList(AttributeUtils.textChange(textAttribute, this.selectedID, this.pointList));
-
-    //   this.emit('updateTextAttribute');
-    //   this.render();
-    // }
-  }
-
-  public renderTextAttribute() {
-    // const point = this.pointList?.find((item) => item.id === this.selectedID);
-    // if (!this.ctx || this.config.textConfigurable !== true || !point) {
-    //   return;
-    // }
-    // const { x, y, attribute, valid } = point;
-
-    // const newWidth = TEXTAREA_WIDTH * this.zoom * 0.6;
-    // const coordinate = AxisUtils.getOffsetCoordinate({ x, y }, this.currentPos, this.zoom);
-    // const toolColor = this.getColor(attribute);
-    // const color = valid ? toolColor?.valid.stroke : toolColor?.invalid.stroke;
-    // const distance = 4;
-    // if (!this._textAttributeInstance) {
-    //   // 属性文本示例
-
-    //   this._textAttributeInstance = new TextAttributeClass({
-    //     width: newWidth,
-    //     container: this.container,
-    //     icon: this.getTextIconSvg(attribute),
-    //     color,
-    //     getCurrentSelectedData: this.getCurrentSelectedData,
-    //     updateSelectedTextAttribute: this.updateSelectedTextAttribute,
-    //   });
-    // }
-
-    // if (this._textAttributeInstance && !this._textAttributeInstance?.isExit) {
-    //   this._textAttributeInstance.appendToContainer();
-    // }
-
-    // this._textAttributeInstance.update(`${point.textAttribute}`, {
-    //   left: coordinate.x,
-    //   top: coordinate.y + distance,
-    //   color,
-    //   width: newWidth,
-    // });
-  }
+  public renderTextAttribute() {}
 
   /**
    * 绘制标点
