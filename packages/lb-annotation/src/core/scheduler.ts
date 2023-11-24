@@ -165,6 +165,11 @@ export class ToolScheduler implements IToolSchedulerOperation {
 
   public createDom(tool?: EToolName) {
     const { width, height } = this.defaultSize;
+    const divId = `dom-tool-${tool}`;
+    const pre = window.document.getElementById(divId);
+    if (pre) {
+      pre.remove();
+    }
     const dom = window.document.createElement('div');
     dom.style.position = 'absolute';
     dom.style.left = '0';
@@ -173,7 +178,7 @@ export class ToolScheduler implements IToolSchedulerOperation {
     dom.style.height = `${height}px`;
     const zIndex = this.toolOperationList.length + 1;
     dom.style.zIndex = `${zIndex}`;
-    dom.id = `dom-tool-${tool}`;
+    dom.id = divId;
     return dom;
   }
 

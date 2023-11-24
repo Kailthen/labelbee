@@ -1075,6 +1075,34 @@ class RectOperation extends BasicToolOperation {
   }
 
   /**
+   * 增加框到列表
+   * @param xyxyBboxes: xyxy bbox
+   * @returns 
+   */
+  public addBboxes(xyxyBboxes: Array<number[]>) {
+    if (!xyxyBboxes || xyxyBboxes.length === 0) {
+      return;
+    }
+    const rects: Array<IRect> = [];
+    xyxyBboxes.forEach((bbox) => {
+      rects.push({
+        x: bbox[0],
+        y: bbox[1],
+        width: bbox[2] - bbox[0],
+        height: bbox[3] - bbox[1],
+        attribute: this.defaultAttribute,
+        valid: true,
+        id: uuid(8, 62),
+        sourceID: '',
+        textAttribute: '',
+      });
+    });
+
+    const newRectList = [...this.rectList, ...rects];
+    this.setRectList(newRectList, true);
+  }
+
+  /**
    * 将绘制中的框体添加进 rectList 中
    * @returns
    */

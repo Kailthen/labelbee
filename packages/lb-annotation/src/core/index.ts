@@ -155,7 +155,7 @@ export default class AnnotationEngine {
       toolList = this.toolName as EToolName[];
     }
 
-    if (toolList.length > 1) {
+    if (toolList.length >= 1) {
       this.toolScheduler.createOperation(undefined, this.imgNode);
     }
 
