@@ -780,6 +780,11 @@ class BasicToolOperation extends EventListener {
     this.history.redo();
   }
 
+  /** 清空历史 */
+  public clearHistory() {
+    this.history.empty();
+  }
+
   public clearCanvas() {
     this.ctx?.clearRect(0, 0, this.size.width, this.size.height);
   }
