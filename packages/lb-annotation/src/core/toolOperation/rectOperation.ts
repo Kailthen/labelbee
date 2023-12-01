@@ -1103,6 +1103,46 @@ class RectOperation extends BasicToolOperation {
   }
 
   /**
+   * 添加rect
+   * @param rectData {x,y,width,height,id}
+   * @returns 
+   */
+  public addOrUpdate(rectData: any) {
+    const { defaultAttribute } = this;
+    const valid = true;
+    const sourceID = CommonToolUtils.getSourceID(this.basicResult);
+    const textAttribute = '';
+    let id: any = _.get(rectData, 'id', null);
+
+    if (_.isEmpty(id)) {
+      // 新增
+      id = uuid(8, 62);
+      const rect: IRect = {
+        sourceID,
+        valid,
+        order: CommonToolUtils.getMaxOrder(this.currentShowList) + 1,
+        textAttribute,
+        attribute: defaultAttribute,
+        ...rectData,
+        id,
+      };
+      this.rectList.unshift(rect as IRect);
+    } else {
+      // 更新
+      const oldIndex = this.rectList.findIndex((item) => {
+        return item.id === id;
+      });
+      this.rectList[oldIndex] = {
+        ...this.rectList.at(oldIndex),
+        ...rectData,
+      };
+    }
+    this.clearActiveStatus();
+    this.render();
+    return id;
+  }
+
+  /**
    * 将绘制中的框体添加进 rectList 中
    * @returns
    */
@@ -1224,8 +1264,12 @@ class RectOperation extends BasicToolOperation {
 
   public shiftRightMouseUp(e: MouseEvent) {
     const hoverRectID = this.getHoverRectID(e);
-
-    this.emit('shiftRightMouseUp', hoverRectID);
+    const coordinate = AxisUtils.getOriginCoordinateWithOffsetCoordinate(this.coord, this.zoom, this.currentPos);
+    this.emit('shiftRightMouseUp', {
+      hoverRectID,
+      pose: { x: e.x, y: e.y },
+      poseOnImage: coordinate,
+    });
   }
 
   public updateDragResult() {

@@ -24,7 +24,7 @@
     "es"
   ],
   "main": "./dist/index.js",
-  "module": "./es/index.js",
+  "module": "./dist/index.js",
   "types": "./dist/types/index.d.ts",
   "author": "laoluo",
   "email": "brady_luo.sz@foxmail.com",
